@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3 uid="uid://bolsqdv45sll2"]
+
+[ext_resource type="Script" path="res://scenes/squirrel.gd" id="1_wmnyf"]
+[ext_resource type="Texture2D" uid="uid://dlaq53emfxu6j" path="res://Sprites/Squirrel/Idle/Idle1.png" id="2_kv0vh"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jbpox"]
+size = Vector2(106, 87.5)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_dnv5w"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_kv0vh")
+}],
+"loop": true,
+"name": &"Stand",
+"speed": 5.0
+}]
+
+[node name="Squirrel" type="CharacterBody2D"]
+script = ExtResource("1_wmnyf")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(394, 540.75)
+shape = SubResource("RectangleShape2D_jbpox")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(623, 889)
+scale = Vector2(0.244739, 0.203097)
+sprite_frames = SubResource("SpriteFrames_dnv5w")
+animation = &"Stand"

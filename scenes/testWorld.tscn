@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://b2x045elrr2x4"]
+
+[ext_resource type="PackedScene" uid="uid://bolsqdv45sll2" path="res://scenes/squirrel.tscn" id="1_ierlj"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_f5utq"]
+size = Vector2(7323, 121)
+
+[node name="Node2D" type="Node2D"]
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+position = Vector2(48, 260)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(2509, 399)
+shape = SubResource("RectangleShape2D_f5utq")
+
+[node name="Squirrel" parent="." instance=ExtResource("1_ierlj")]
+position = Vector2(91, -15)
