@@ -1,0 +1,44 @@
+[gd_scene load_steps=6 format=3 uid="uid://bilrshh6koro0"]
+
+[ext_resource type="Script" path="res://scripts/player.gd" id="1_n4575"]
+[ext_resource type="Texture2D" uid="uid://dv1um72rtp84m" path="res://Sprites/Squirrel/Idle-cropped/Idle-cropped.png" id="1_pkyru"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hvux2"]
+atlas = ExtResource("1_pkyru")
+region = Rect2(0, 0, 451, 432)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_mpl6g"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hvux2")
+}],
+"loop": true,
+"name": &"Idle",
+"speed": 1.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_7mswq"]
+radius = 121.202
+
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1_n4575")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(59, -85)
+scale = Vector2(1.04073, 0.959834)
+sprite_frames = SubResource("SpriteFrames_mpl6g")
+animation = &"Idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-8, -14)
+shape = SubResource("CircleShape2D_7mswq")
+
+[node name="coyote_timer" type="Timer" parent="."]
+one_shot = true
+
+[node name="fullhop_timer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="timeout" from="coyote_timer" to="." method="_on_coyote_timer_timeout"]
+[connection signal="timeout" from="fullhop_timer" to="." method="_on_fullhop_timer_timeout"]
