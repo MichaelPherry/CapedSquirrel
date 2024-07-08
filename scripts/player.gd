@@ -1,5 +1,6 @@
 extends CharacterBody2D
-
+#@export var grapple_scene : PackedScene
+signal shoot
 
 const SPEED = 650
 const JUMP_VELOCITY = -480
@@ -16,7 +17,9 @@ const COYOTE_TIME_MAX = 5
 
 const FULLHOP_TIME_MAX = 30
 
+const CHAIN_PULL = 50
 
+var signal_holder = 0
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 
@@ -30,28 +33,63 @@ var curr_jumps = total_jumps
 
 var curr_accel = DEFAULT_ACCEL
 
+var chain_velocity := Vector2(0,0)
 
+var is_hooked = false
+var hook_pos = Vector2(0,0)
+
+@onready var grapple_scene = preload("res://scenes/grapple.tscn")
 
 @onready var coyote_timer = $coyote_timer
 
 @onready var fullhop_timer = $fullhop_timer
 
+func _input(event):
+	if event is InputEventMouseButton:
+		var grapple = grapple_scene.instantiate()
+		if event.pressed:
+			var dir = get_global_mouse_position() - self.position
+			grapple.shoot(dir, self.position)
+			add_child(grapple)
+	
+		else:
+			#shoot.emit(0, self.position, false)
+			grapple.release()
+			var child = get_node("grapple")
+			self.remove_child(child)
+			
+
+func chain_hooked():
+	chain_velocity = to_local(Global.hook_pos).normalized() * CHAIN_PULL
+	if chain_velocity.y > 0:
+		chain_velocity.y *= 0.35
+	else:
+		chain_velocity.y *= 1.65
 
 
 
 func _physics_process(delta):
+	
+	if Global.is_hooked:
+		chain_hooked()
+	else:
+		# Not hooked -> no chain velocity
+		chain_velocity = Vector2(0,0)
+	velocity += chain_velocity
 	
 	# Add the gravity.
 	if not is_on_floor():
 		if abs(velocity.y) < JUMP_HANG_THRESHOLD:
 			curr_gravity = default_gravity*JUMP_HANG_MODIFIER	
 			curr_accel = HANG_ACCEL
+			
 		elif curr_gravity != 0:
 			curr_gravity = default_gravity
 			curr_accel = DEFAULT_ACCEL
 		velocity.y += (curr_gravity * delta * curr_accel)
+		
 		if coyote_timer.is_stopped():
-#passing through number of frames of coyote_time (COYOTE_TIME_MAX or 5 frames) and normalizes to seconds
+			#passing through number of frames of coyote_time (COYOTE_TIME_MAX or 5 frames) and normalizes to seconds
 			coyote_timer.start(COYOTE_TIME_MAX/Engine.get_frames_per_second())
 		
 	else:
@@ -62,8 +100,7 @@ func _physics_process(delta):
 		coyote_timer.stop()
 		fullhop_timer.stop()
 		
-	
-
+		
 	# Handle jump.
 	if Input.is_action_just_pressed("ui_accept") and curr_jumps:
 		velocity.y = JUMP_VELOCITY
