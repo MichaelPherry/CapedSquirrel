@@ -4,7 +4,7 @@ extends State
 #Can hold the jump button for up to 12 frames to vary jump height
 	#works as follows: set upwards velocity to jump and set gravity to zero, 
 	#set gravity to normal amount when a is released,  or after 10 frames has passed
-var FULLHOP_TIME_LENGTH = .35
+var FULLHOP_TIME_LENGTH = .25
 
 @onready var jump_buffer_timer = $"../../jump_buffer_timer"
 
@@ -23,11 +23,12 @@ var fall_state: State
 
 
 #slight boost to speed when jumping
-const SPEED = 300
-const ACCELERATION = .9
-const VEL_POW = 1.3
+const SPEED = 130
+const ACCELERATION = .65
+const DECCELERATION = .85
+const VEL_POW = 1.5
 
-const JUMP_VELOCITY = -230
+const JUMP_VELOCITY = -180
 
 const JUMP_HANG_THRESHOLD = 60
 

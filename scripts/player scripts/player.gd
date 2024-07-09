@@ -7,11 +7,11 @@ extends CharacterBody2D
 
 @onready var sprite = $AnimatedSprite2D
 
-const SPEED = 200
+const SPEED = 80
 const ACCELERATION = .88
 const VEL_POW = 1.3
 
-var DEFAULT_GRAVITY = ProjectSettings.get_setting("physics/2d/default_gravity")*1.3
+var DEFAULT_GRAVITY = ProjectSettings.get_setting("physics/2d/default_gravity")*1.1
 
 
 var frame_rate = 60

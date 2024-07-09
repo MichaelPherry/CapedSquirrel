@@ -17,11 +17,12 @@ var jump_state: State
 
 const JUMP_HANG_THRESHOLD = 60
 
-const SPEED = 360
-const ACCELERATION = .98
-const VEL_POW = 1.3
+const SPEED = 190
+const ACCELERATION = .85
+const DECCELERATION = .95
+const VEL_POW = 1.5
 
-const GRAVITY_MODIFIER = .84
+const GRAVITY_MODIFIER = .6
 
 var target_speed = 0
 

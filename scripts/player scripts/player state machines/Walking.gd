@@ -10,9 +10,10 @@ var idle_state: State
 
 
 
-const SPEED = 270
-const ACCELERATION = .9
-const VEL_POW = 1.3
+const SPEED = 120
+const ACCELERATION = .65
+const DECCELERATION = .85
+const VEL_POW = 1.5
 
 var target_speed = 0
 
@@ -50,7 +51,10 @@ func physics_step(delta) -> State:
 	
 	
 	var vel_diff = target_speed - parent.velocity.x
-	var temp_accel = pow(ACCELERATION * abs(vel_diff), VEL_POW)*sign(vel_diff)
+	var base_accel = DECCELERATION
+	if (sign(vel_diff) == sign(parent.velocity.x)) or (sign(parent.velocity.x) == 0):
+		base_accel = ACCELERATION
+	var temp_accel = pow(base_accel * abs(vel_diff), VEL_POW)*sign(vel_diff)
 	
 	parent.velocity.x += temp_accel * delta
 	parent.velocity.y += parent.DEFAULT_GRAVITY*delta

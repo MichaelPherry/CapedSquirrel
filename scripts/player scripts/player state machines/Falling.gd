@@ -17,9 +17,10 @@ var idle_state: State
 
 
 
-const SPEED = 270
-const ACCELERATION = .9
-const VEL_POW = 1.3
+const SPEED = 120
+const ACCELERATION = .65
+const DECCELERATION = .85
+const VEL_POW = 1.5
 
 const MAX_FALL_SPEED = 600
 
