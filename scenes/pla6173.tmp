@@ -3,11 +3,11 @@
 [ext_resource type="Script" path="res://scripts/player scripts/player.gd" id="1_w235m"]
 [ext_resource type="Texture2D" uid="uid://nup44ww8xw0o" path="res://icon.svg" id="2_kbk4u"]
 [ext_resource type="Script" path="res://scripts/state machine/state_machine.gd" id="3_fcdwa"]
-[ext_resource type="Script" path="res://scripts/player scripts/player state machines/Idle.gd" id="4_2hnud"]
-[ext_resource type="Script" path="res://scripts/player scripts/player state machines/Walking.gd" id="5_c3vt5"]
-[ext_resource type="Script" path="res://scripts/player scripts/player state machines/Jumping.gd" id="6_8s5i6"]
-[ext_resource type="Script" path="res://scripts/player scripts/player state machines/Jump_peak.gd" id="7_g71tp"]
-[ext_resource type="Script" path="res://scripts/player scripts/player state machines/Falling.gd" id="8_a6b5p"]
+[ext_resource type="Script" path="res://scripts/player scripts/Idle.gd" id="4_2hnud"]
+[ext_resource type="Script" path="res://scripts/player scripts/Walking.gd" id="5_c3vt5"]
+[ext_resource type="Script" path="res://scripts/player scripts/Jumping.gd" id="6_8s5i6"]
+[ext_resource type="Script" path="res://scripts/player scripts/Jump_peak.gd" id="7_g71tp"]
+[ext_resource type="Script" path="res://scripts/player scripts/Falling.gd" id="8_a6b5p"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_6x6te"]
 atlas = ExtResource("2_kbk4u")
@@ -88,7 +88,6 @@ one_shot = true
 one_shot = true
 
 [node name="jump_buffer_timer" type="Timer" parent="."]
-one_shot = true
 
 [connection signal="timeout" from="coyote_timer" to="Player_state_machine/Falling" method="_on_coyote_timer_timeout"]
 [connection signal="timeout" from="fullhop_timer" to="Player_state_machine/Jumping" method="_on_fullhop_timer_timeout"]
