@@ -3,15 +3,6 @@ extends State
 #name for debugging
 var state_name = "walking"
 
-#"pointers" to other states, export means set them manually in inspector
-@export
-var jump_state: State
-@export
-var fall_state: State
-@export
-var idle_state: State
-
-
 #speed for current state (default because we are grounded)
 const SPEED = PlayerData.BASE_SPEED
 
@@ -25,7 +16,7 @@ func _ready():
 
 func enter():
 	#re-enables coyote time if we fall off a ledge
-	fall_state.can_jump = true
+	parent.fall_state.can_jump = true
 	#get movement input
 	var direction = Input.get_axis(PlayerData.controls["left"], PlayerData.controls["right"])
 	target_speed = direction*SPEED
@@ -39,7 +30,7 @@ func exit():
 func input_step(event: InputEvent) -> State:
 	#get input, jump if jump is pressed
 	if Input.is_action_just_pressed(PlayerData.controls["jump"]):
-		return jump_state
+		return parent.jump_state
 	var direction = Input.get_axis(PlayerData.controls["left"], PlayerData.controls["right"])
 	target_speed = direction*SPEED
 	if direction != 0:
@@ -60,9 +51,9 @@ func physics_step(delta) -> State:
 
 	parent.move_and_slide()
 	if !parent.is_on_floor():
-		return fall_state
+		return parent.fall_state
 	if parent.velocity.x == 0:
-		return idle_state
+		return parent.idle_state
 		
 	return null
 

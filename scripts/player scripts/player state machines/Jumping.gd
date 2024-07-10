@@ -7,16 +7,6 @@ var state_name = "jumping"
 @onready var fullhop_timer =  $"../../fullhop_timer"
 @onready var jump_buffer_timer = $"../../jump_buffer_timer"
 
-#"pointers" to other states (set in inspector)
-@export
-var walk_state: State
-@export
-var idle_state: State
-@export
-var jump_peak_state: State
-@export
-var fall_state: State
-
 #speed is same as default 
 const SPEED = PlayerData.BASE_SPEED
 
@@ -28,7 +18,7 @@ var target_speed = 0
 
 func enter():
 	#ensure coyote time does not apply if we enter fall state from jump
-	fall_state.can_jump = false
+	parent.fall_state.can_jump = false
 	#gravity is zero at start of jump (comes back in after fullhop or on key release)
 	current_gravity = 0
 	#set y velocity to jump height and add jump boost if we are moving in a direction
@@ -88,12 +78,12 @@ func physics_step(delta) -> State:
 		if PlayerData.jump_buffered:
 			return self
 		if parent.velocity.x == 0:
-			return idle_state
+			return parent.idle_state
 		else:
-			return walk_state
+			return parent.walk_state
 	#finally, enter the jump peak state (increases acceleration/velocity, lowers gravity)
 	if abs(parent.velocity.y) < PlayerData.HANG_THRESHOLD:
-		return jump_peak_state
+		return parent.jump_peak_state
 	return null
 	
 	

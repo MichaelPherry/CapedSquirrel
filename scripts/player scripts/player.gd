@@ -1,7 +1,16 @@
 extends CharacterBody2D
 
 
-
+@export
+var walk_state: State
+@export
+var idle_state: State
+@export
+var jump_peak_state: State
+@export
+var fall_state: State
+@export 
+var jump_state: State
 
 @onready var state_machine = $Player_state_machine
 
@@ -28,3 +37,6 @@ func _process(delta):
 func _on_jump_buffer_timer_timeout():
 	PlayerData.jump_buffered = false
 	return
+	
+	
+	
