@@ -1,9 +1,11 @@
 extends State
 
+#name for debugging
+var state_name = "jump_peak"
+#"pointer" to timer
 @onready var jump_buffer_timer = $"../../jump_buffer_timer"
 
-var JUMP_BUFFER_LENGTH = .1
-
+#"pointers" to different states (set in inspector)
 @export
 var walk_state: State
 @export
@@ -14,75 +16,75 @@ var fall_state: State
 var jump_state: State
 
 
+#multipliers to increase velocity/acceleration respectively
+const ACCEL_MOD = 1.5
+const VEL_MOD = 1.35
+#speed (base speed times velocity modifier )
+const SPEED = PlayerData.BASE_SPEED*VEL_MOD
 
-const JUMP_HANG_THRESHOLD = 60
 
-const SPEED = 190
-const ACCELERATION = .85
-const DECCELERATION = .95
-const VEL_POW = 1.5
-
-const GRAVITY_MODIFIER = .6
+#lowered gravity at apex of jump
+const GRAVITY_MODIFIER = .75
+var GRAVITY = PlayerData.DEFAULT_GRAVITY*GRAVITY_MODIFIER
 
 var target_speed = 0
 
-var jump_buffered = false
 
 func enter():
-	var direction = Input.get_axis("ui_left", "ui_right")
+	#calculate movement
+	var direction = Input.get_axis(PlayerData.controls["left"], PlayerData.controls["right"])
 	target_speed = direction*SPEED
-	
+	#set animation
 	parent.sprite.play(animation_name)
 	return
 	
 	
 func exit():
-	jump_buffer_timer.stop()
-	return
+	pass
 	
 func input_step(event: InputEvent) -> State:
-	if Input.is_action_just_pressed("ui_accept"):
-		jump_buffer_timer.start(JUMP_BUFFER_LENGTH)
-		jump_buffered = true
+	#get input, buffer jump if pressed and calculate movement direction
+	if Input.is_action_just_pressed(PlayerData.controls["jump"]):
+		jump_buffer_timer.start(PlayerData.JUMP_BUFFER_LENGTH)
+		PlayerData.jump_buffered = true
 	
-	var direction = Input.get_axis("ui_left", "ui_right")
+	var direction = Input.get_axis(PlayerData.controls["left"], PlayerData.controls["right"])
 	target_speed = direction*SPEED
 	
 	return null
 	
-func logic_step(delta) -> State:
-	return super(delta)
 	
 func physics_step(delta) -> State:
-	var vel_diff = target_speed - parent.velocity.x
-	var temp_accel = pow(ACCELERATION * abs(vel_diff), VEL_POW)*sign(vel_diff)
+	#calculate acceleration and gravity, update velocity and move
+	var temp_accel = PlayerData.calcTempAccel(target_speed, parent.velocity.x, SPEED, ACCEL_MOD, PlayerData.AIR_DRAG)
 	
-	parent.velocity.x += temp_accel * delta
-	parent.velocity.y += (parent.DEFAULT_GRAVITY*delta*GRAVITY_MODIFIER)
+	parent.velocity.x += (temp_accel * delta)
+	parent.velocity.y += (GRAVITY*delta)
 	#want to maybe implement a grace window where u get a boost in your jump if ur just about to clear an obstacle
 	parent.move_and_slide()
 	
 	#if player hits a flat ceiling, immediately enter falling state
-	for i in parent.get_slide_collision_count():
-		if parent.get_slide_collision(i).get_normal() == Vector2(0, 1):
-			parent.velocity.y = 0
-			return fall_state
+	#ommitted cuz it didnt feel good
+	#for i in parent.get_slide_collision_count():
+		#if parent.get_slide_collision(i).get_normal() == Vector2(0, 1):
+			#parent.velocity.y = 0
+			#return fall_state
+			
 	#otherwise check if our jump has interrupted and we landed 
 		#(edit: i dont think this is actually possible since we must be traveling upwards, but its here just in case)
 	if parent.is_on_floor():
-		if jump_buffered:
+		if PlayerData.jump_buffered:
 			return jump_state
 		if parent.velocity.x == 0:
 			return idle_state
 		else:
 			return walk_state
-	#finally if we dont "bonk" into the ceiling, enter the jump peak state (increases gravity/acceleration/velocity)
-	if parent.velocity.y > JUMP_HANG_THRESHOLD:
+	#finally, enter the fall state if we are traveling fast enough
+	if parent.velocity.y > PlayerData.HANG_THRESHOLD:
 		return fall_state
+		
 	return null
 	
 
 
 
-func _on_jump_buffer_timer_timeout():
-	jump_buffered = false

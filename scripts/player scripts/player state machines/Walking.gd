@@ -1,6 +1,9 @@
 extends State
 
+#name for debugging
+var state_name = "walking"
 
+#"pointers" to other states, export means set them manually in inspector
 @export
 var jump_state: State
 @export
@@ -9,12 +12,11 @@ var fall_state: State
 var idle_state: State
 
 
+#speed for current state (default because we are grounded)
+const SPEED = PlayerData.BASE_SPEED
 
-const SPEED = 120
-const ACCELERATION = .65
-const DECCELERATION = .85
-const VEL_POW = 1.5
 
+#variable to determine movement
 var target_speed = 0
 
 
@@ -22,11 +24,12 @@ func _ready():
 	return
 
 func enter():
+	#re-enables coyote time if we fall off a ledge
 	fall_state.can_jump = true
-	
-	var direction = Input.get_axis("ui_left", "ui_right")
+	#get movement input
+	var direction = Input.get_axis(PlayerData.controls["left"], PlayerData.controls["right"])
 	target_speed = direction*SPEED
-	
+	#play animation
 	parent.sprite.play(animation_name)
 	return
 	
@@ -34,9 +37,10 @@ func exit():
 	pass
 	
 func input_step(event: InputEvent) -> State:
-	if Input.is_action_just_pressed("ui_accept"):
+	#get input, jump if jump is pressed
+	if Input.is_action_just_pressed(PlayerData.controls["jump"]):
 		return jump_state
-	var direction = Input.get_axis("ui_left", "ui_right")
+	var direction = Input.get_axis(PlayerData.controls["left"], PlayerData.controls["right"])
 	target_speed = direction*SPEED
 	if direction != 0:
 		#parent.animator.x_scale?? = direction
@@ -45,19 +49,14 @@ func input_step(event: InputEvent) -> State:
 	return null
 	
 func logic_step(delta) -> State:
-	return super(delta)
+	return null
 	
 func physics_step(delta) -> State:
-	
-	
-	var vel_diff = target_speed - parent.velocity.x
-	var base_accel = DECCELERATION
-	if (sign(vel_diff) == sign(parent.velocity.x)) or (sign(parent.velocity.x) == 0):
-		base_accel = ACCELERATION
-	var temp_accel = pow(base_accel * abs(vel_diff), VEL_POW)*sign(vel_diff)
-	
+	#calculate acceleration and gravity, update velocity and move
+	var temp_accel = PlayerData.calcTempAccel(target_speed, parent.velocity.x, SPEED)
+
 	parent.velocity.x += temp_accel * delta
-	parent.velocity.y += parent.DEFAULT_GRAVITY*delta
+	parent.velocity.y += PlayerData.DEFAULT_GRAVITY*delta
 
 	parent.move_and_slide()
 	if !parent.is_on_floor():

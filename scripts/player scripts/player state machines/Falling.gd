@@ -1,13 +1,10 @@
 extends State
 
+#"pointers" to timers
 @onready var coyote_timer = $"../../coyote_timer"
-#allows for 5 frames leniency to input jump after entering fall (not letting me make it a constant for whatever reason)
-var COYOTE_TIME_LENGTH = .15
-
 @onready var jump_buffer_timer = $"../../jump_buffer_timer"
 
-var JUMP_BUFFER_LENGTH = .1
-
+#"pointers" to other state (export means we set them manually in the inspector)
 @export
 var jump_state: State
 @export
@@ -15,64 +12,69 @@ var walk_state: State
 @export
 var idle_state: State
 
+#name for debugging
+var state_name = "falling"
+
+#top speed for given state (base speed since falling and running have same speed(could be changed if we wanted)
+const SPEED = PlayerData.BASE_SPEED
 
 
-const SPEED = 120
-const ACCELERATION = .65
-const DECCELERATION = .85
-const VEL_POW = 1.5
+#increased gravity during fall
+const GRAV_MOD = 1.6
+var GRAVITY = PlayerData.DEFAULT_GRAVITY*GRAV_MOD
+#maximum fall speed (maybe implement a feature where this is increased when holding down, i know celeste does this)
+const MAX_FALL_SPEED = 300
 
-const MAX_FALL_SPEED = 600
-
-
+#variable that is only true if we have just left the walking or idle state, and only remains true for "coyote_time_length" number of frames
 var can_jump = false
 var target_speed = 0
 
-var jump_buffered = false
 
 func enter():
-	coyote_timer.start(COYOTE_TIME_LENGTH)
+	#when we have just entered fall, set a timer to remove our jump after a short duration (5ish frames)
+	#note if we are coming from the jump/jump peak states, can_jump will already be false so this timer effectively does nothing in this situation
+	coyote_timer.start(PlayerData.COYOTE_TIME_LENGTH)
 	
-	var direction = Input.get_axis("ui_left", "ui_right")
+	#get movement input
+	var direction = Input.get_axis(PlayerData.controls["left"], PlayerData.controls["right"])
 	target_speed = direction*SPEED
-	
+	#play the falling animation (not yet implemented all states still have "idle" track as their animation)
 	parent.sprite.play(animation_name)
 	return
 	
 	
 func exit():
 	coyote_timer.stop()
-	jump_buffer_timer.stop()
 	return
 	
 func input_step(event: InputEvent) -> State:
-	if Input.is_action_just_pressed("ui_accept"):
+	#get movement and jump inputs, if jumped and still in coyote time, enter jump, otherwise buffer jump 
+	if Input.is_action_just_pressed(PlayerData.controls["jump"]):
 		if can_jump:
 			return jump_state
 		else:
-			jump_buffer_timer.start(JUMP_BUFFER_LENGTH)
-			jump_buffered = true
+			jump_buffer_timer.start(PlayerData.JUMP_BUFFER_LENGTH)
+			PlayerData.jump_buffered = true
 		
-	var direction = Input.get_axis("ui_left", "ui_right")
+	var direction = Input.get_axis(PlayerData.controls["left"], PlayerData.controls["right"])
 	target_speed = direction*SPEED
 	return null
 	
-func logic_step(delta) -> State:
-	return super(delta)
 	
 func physics_step(delta) -> State:
-	var vel_diff = target_speed - parent.velocity.x
-	var temp_accel = pow(ACCELERATION * abs(vel_diff), VEL_POW)*sign(vel_diff)
+	#calculate acceleration and update velocities
+	var temp_accel = PlayerData.calcTempAccel(target_speed, parent.velocity.x, SPEED, PlayerData.AERIAL_ACCEL_MOD, PlayerData.AIR_DRAG)
 	
 	parent.velocity.x += temp_accel * delta
-	parent.velocity.y += parent.DEFAULT_GRAVITY*delta
-	
+	parent.velocity.y += GRAVITY*delta
+	#ensure we dont pass max fall speed
 	if parent.velocity.y > MAX_FALL_SPEED:
 		parent.velocity.y = MAX_FALL_SPEED
+	#move player and slide against walls and ceilings
 	parent.move_and_slide()
-	
-	if parent.is_on_floor:
-		if jump_buffered:
+	#if we end up on the floor, leave falling state, if a jump is buffered enter jump state, otherwise idle or walking 
+	if parent.is_on_floor():
+		if PlayerData.jump_buffered:
 			return jump_state
 		if parent.velocity.x == 0:
 			return idle_state
@@ -89,5 +91,4 @@ func _on_coyote_timer_timeout():
 
 
 
-func _on_jump_buffer_timer_timeout():
-	jump_buffered = false
+
