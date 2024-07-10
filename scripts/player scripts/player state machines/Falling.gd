@@ -4,13 +4,6 @@ extends State
 @onready var coyote_timer = $"../../coyote_timer"
 @onready var jump_buffer_timer = $"../../jump_buffer_timer"
 
-#"pointers" to other state (export means we set them manually in the inspector)
-@export
-var jump_state: State
-@export
-var walk_state: State
-@export
-var idle_state: State
 
 #name for debugging
 var state_name = "falling"
@@ -51,7 +44,7 @@ func input_step(event: InputEvent) -> State:
 	#get movement and jump inputs, if jumped and still in coyote time, enter jump, otherwise buffer jump 
 	if Input.is_action_just_pressed(PlayerData.controls["jump"]):
 		if can_jump:
-			return jump_state
+			return parent.jump_state
 		else:
 			jump_buffer_timer.start(PlayerData.JUMP_BUFFER_LENGTH)
 			PlayerData.jump_buffered = true
@@ -75,11 +68,11 @@ func physics_step(delta) -> State:
 	#if we end up on the floor, leave falling state, if a jump is buffered enter jump state, otherwise idle or walking 
 	if parent.is_on_floor():
 		if PlayerData.jump_buffered:
-			return jump_state
+			return parent.jump_state
 		if parent.velocity.x == 0:
-			return idle_state
+			return parent.idle_state
 		else:
-			return walk_state
+			return parent.walk_state
 	
 	return null
 

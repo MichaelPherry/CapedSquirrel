@@ -2,6 +2,7 @@ extends Node
 
 #store globals specific to player here, also accessible from every scene/script
 
+
 #base (grounded) speed and acceleration
 const BASE_SPEED = 128
 const BASE_ACCELERATION = BASE_SPEED/8 #8 and 5 signify the number of frames desired to reach top speed or fully stop

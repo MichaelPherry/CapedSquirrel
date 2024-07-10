@@ -5,15 +5,6 @@ var state_name = "jump_peak"
 #"pointer" to timer
 @onready var jump_buffer_timer = $"../../jump_buffer_timer"
 
-#"pointers" to different states (set in inspector)
-@export
-var walk_state: State
-@export
-var idle_state: State
-@export
-var fall_state: State
-@export
-var jump_state: State
 
 
 #multipliers to increase velocity/acceleration respectively
@@ -74,14 +65,14 @@ func physics_step(delta) -> State:
 		#(edit: i dont think this is actually possible since we must be traveling upwards, but its here just in case)
 	if parent.is_on_floor():
 		if PlayerData.jump_buffered:
-			return jump_state
+			return parent.jump_state
 		if parent.velocity.x == 0:
-			return idle_state
+			return parent.idle_state
 		else:
-			return walk_state
+			return parent.walk_state
 	#finally, enter the fall state if we are traveling fast enough
 	if parent.velocity.y > PlayerData.HANG_THRESHOLD:
-		return fall_state
+		return parent.fall_state
 		
 	return null
 	
