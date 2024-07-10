@@ -13,7 +13,7 @@
 atlas = ExtResource("2_jh824")
 region = Rect2(0, 0, 16, 32)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_mpl6g"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_0idau"]
 animations = [{
 "frames": [{
 "duration": 1.0,
