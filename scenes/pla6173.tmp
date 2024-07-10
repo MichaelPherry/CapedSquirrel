@@ -1,43 +1,44 @@
 [gd_scene load_steps=12 format=3 uid="uid://bilrshh6koro0"]
 
 [ext_resource type="Script" path="res://scripts/player scripts/player.gd" id="1_w235m"]
-[ext_resource type="Texture2D" uid="uid://kre15xebqvbh" path="res://Sprites/Squirrel/aidan_squirrel.png" id="2_jh824"]
+[ext_resource type="Texture2D" uid="uid://nup44ww8xw0o" path="res://icon.svg" id="2_kbk4u"]
 [ext_resource type="Script" path="res://scripts/state machine/state_machine.gd" id="3_fcdwa"]
-[ext_resource type="Script" path="res://scripts/player scripts/player state machines/Idle.gd" id="4_2hnud"]
-[ext_resource type="Script" path="res://scripts/player scripts/player state machines/Walking.gd" id="5_c3vt5"]
-[ext_resource type="Script" path="res://scripts/player scripts/player state machines/Jumping.gd" id="6_8s5i6"]
-[ext_resource type="Script" path="res://scripts/player scripts/player state machines/Jump_peak.gd" id="7_g71tp"]
-[ext_resource type="Script" path="res://scripts/player scripts/player state machines/Falling.gd" id="8_a6b5p"]
+[ext_resource type="Script" path="res://scripts/player scripts/Idle.gd" id="4_2hnud"]
+[ext_resource type="Script" path="res://scripts/player scripts/Walking.gd" id="5_c3vt5"]
+[ext_resource type="Script" path="res://scripts/player scripts/Jumping.gd" id="6_8s5i6"]
+[ext_resource type="Script" path="res://scripts/player scripts/Jump_peak.gd" id="7_g71tp"]
+[ext_resource type="Script" path="res://scripts/player scripts/Falling.gd" id="8_a6b5p"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_7xy0o"]
-atlas = ExtResource("2_jh824")
-region = Rect2(0, 0, 16, 32)
+[sub_resource type="AtlasTexture" id="AtlasTexture_6x6te"]
+atlas = ExtResource("2_kbk4u")
+region = Rect2(0, 0, 128, 128)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_0idau"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_mpl6g"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_7xy0o")
+"texture": SubResource("AtlasTexture_6x6te")
 }],
 "loop": true,
 "name": &"idle",
 "speed": 5.0
 }]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_aehqx"]
-radius = 4.0
-height = 20.0
+[sub_resource type="CircleShape2D" id="CircleShape2D_7mswq"]
+radius = 29.0689
 
 [node name="Player" type="CharacterBody2D"]
 script = ExtResource("1_w235m")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(-1, 1)
+scale = Vector2(0.5, 0.5)
 sprite_frames = SubResource("SpriteFrames_mpl6g")
 animation = &"idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(1, 6)
-shape = SubResource("CapsuleShape2D_aehqx")
+position = Vector2(-2, 2)
+shape = SubResource("CircleShape2D_7mswq")
 
 [node name="Player_state_machine" type="Node" parent="." node_paths=PackedStringArray("starting_state")]
 script = ExtResource("3_fcdwa")
@@ -87,8 +88,9 @@ one_shot = true
 one_shot = true
 
 [node name="jump_buffer_timer" type="Timer" parent="."]
-one_shot = true
 
 [connection signal="timeout" from="coyote_timer" to="Player_state_machine/Falling" method="_on_coyote_timer_timeout"]
 [connection signal="timeout" from="fullhop_timer" to="Player_state_machine/Jumping" method="_on_fullhop_timer_timeout"]
-[connection signal="timeout" from="jump_buffer_timer" to="." method="_on_jump_buffer_timer_timeout"]
+[connection signal="timeout" from="jump_buffer_timer" to="Player_state_machine/Jumping" method="_on_jump_buffer_timer_timeout"]
+[connection signal="timeout" from="jump_buffer_timer" to="Player_state_machine/Jump_peak" method="_on_jump_buffer_timer_timeout"]
+[connection signal="timeout" from="jump_buffer_timer" to="Player_state_machine/Falling" method="_on_jump_buffer_timer_timeout"]

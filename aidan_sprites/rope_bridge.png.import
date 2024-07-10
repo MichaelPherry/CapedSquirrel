@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dv1um72rtp84m"
-path="res://.godot/imported/Idle-cropped.png-f0adfc79e64e82a63d600b9537dd086d.ctex"
+uid="uid://cr4qcujkosieu"
+path="res://.godot/imported/rope_bridge.png-9c2ea9ea998ec4edf6425d48b50df0e2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/Squirrel/Idle-cropped/Idle-cropped.png"
-dest_files=["res://.godot/imported/Idle-cropped.png-f0adfc79e64e82a63d600b9537dd086d.ctex"]
+source_file="res://aidan_sprites/rope_bridge.png"
+dest_files=["res://.godot/imported/rope_bridge.png-9c2ea9ea998ec4edf6425d48b50df0e2.ctex"]
 
 [params]
 

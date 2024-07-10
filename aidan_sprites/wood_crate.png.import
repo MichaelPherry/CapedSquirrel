@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dlaq53emfxu6j"
-path="res://.godot/imported/Idle1.png-b0c84d3e89a77c4c6aaceec5e7febdab.ctex"
+uid="uid://bygnxnaga1ypk"
+path="res://.godot/imported/wood_crate.png-700e301d40b91de158e7d37dde878f86.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/Squirrel/Idle/Idle1.png"
-dest_files=["res://.godot/imported/Idle1.png-b0c84d3e89a77c4c6aaceec5e7febdab.ctex"]
+source_file="res://aidan_sprites/wood_crate.png"
+dest_files=["res://.godot/imported/wood_crate.png-700e301d40b91de158e7d37dde878f86.ctex"]
 
 [params]
 
