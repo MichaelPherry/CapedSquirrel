@@ -48,7 +48,8 @@ func input_step(event: InputEvent) -> State:
 		else:
 			jump_buffer_timer.start(PlayerData.JUMP_BUFFER_LENGTH)
 			PlayerData.jump_buffered = true
-		
+	if Input.is_action_just_pressed(PlayerData.controls["glide"]):
+		return parent.glide_state
 	var direction = Input.get_axis(PlayerData.controls["left"], PlayerData.controls["right"])
 	target_speed = direction*SPEED
 	return null

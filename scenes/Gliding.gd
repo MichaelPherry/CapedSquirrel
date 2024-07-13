@@ -1,34 +1,37 @@
 extends State
 
 #name for debugging
-var state_name = "jump_peak"
+var state_name = "gliding"
 #"pointer" to timer
 @onready var jump_buffer_timer = $"../../jump_buffer_timer"
 
+const GLIDE_BOOST = -64
+const GLIDE_GRAV_MOD = .32
 
+var GRAVITY = PlayerData.DEFAULT_GRAVITY*GLIDE_GRAV_MOD
 
-#multipliers to increase velocity/acceleration respectively
-const ACCEL_MOD = 1.5
-const VEL_MOD = 1.35
-#speed (base speed times velocity modifier )
-const SPEED = PlayerData.BASE_SPEED*VEL_MOD
+const SPEED_MOD = 1.3
+const ACCEL_MOD = .75
 
-
-#lowered gravity at apex of jump
-const GRAVITY_MODIFIER = .75
-var GRAVITY = PlayerData.DEFAULT_GRAVITY*GRAVITY_MODIFIER
+var SPEED = PlayerData.BASE_SPEED*SPEED_MOD
 
 var target_speed = 0
 
-
 func enter():
+	parent.sprite.play(animation_name)
+	#boost in velocity if not holding down
+	if !(Input.is_action_pressed(PlayerData.controls["crouch"])):
+		parent.velocity.y = GLIDE_BOOST
+	else:
+		parent.velocity.y = 0
 	#calculate movement
 	var direction = Input.get_axis(PlayerData.controls["left"], PlayerData.controls["right"])
 	target_speed = direction*SPEED
 	#set animation
 	parent.sprite.play(animation_name)
 	return
-	
+		
+	return
 	
 func exit():
 	pass
@@ -38,13 +41,17 @@ func input_step(event: InputEvent) -> State:
 	if Input.is_action_just_pressed(PlayerData.controls["jump"]):
 		jump_buffer_timer.start(PlayerData.JUMP_BUFFER_LENGTH)
 		PlayerData.jump_buffered = true
+		
 	if Input.is_action_just_pressed(PlayerData.controls["glide"]):
-		return parent.glide_state
+		return parent.fall_state
+	
 	var direction = Input.get_axis(PlayerData.controls["left"], PlayerData.controls["right"])
 	target_speed = direction*SPEED
 	
 	return null
 	
+func logic_step(delta) -> State:
+	return null
 	
 func physics_step(delta) -> State:
 	#calculate acceleration and gravity, update velocity and move
@@ -55,15 +62,6 @@ func physics_step(delta) -> State:
 	#want to maybe implement a grace window where u get a boost in your jump if ur just about to clear an obstacle
 	parent.move_and_slide()
 	
-	#if player hits a flat ceiling, immediately enter falling state
-	#ommitted cuz it didnt feel good
-	#for i in parent.get_slide_collision_count():
-		#if parent.get_slide_collision(i).get_normal() == Vector2(0, 1):
-			#parent.velocity.y = 0
-			#return fall_state
-			
-	#otherwise check if our jump has interrupted and we landed 
-		#(edit: i dont think this is actually possible since we must be traveling upwards, but its here just in case)
 	if parent.is_on_floor():
 		if PlayerData.jump_buffered:
 			return parent.jump_state
@@ -71,12 +69,5 @@ func physics_step(delta) -> State:
 			return parent.idle_state
 		else:
 			return parent.walk_state
-	#finally, enter the fall state if we are traveling fast enough
-	if parent.velocity.y > PlayerData.HANG_THRESHOLD:
-		return parent.fall_state
-		
 	return null
-	
-
-
 

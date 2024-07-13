@@ -11,6 +11,8 @@ var jump_peak_state: State
 var fall_state: State
 @export 
 var jump_state: State
+@export 
+var glide_state: State
 
 @onready var state_machine = $Player_state_machine
 

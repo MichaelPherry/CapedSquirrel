@@ -14,7 +14,8 @@ const SPEED = PlayerData.BASE_SPEED
 #when entering jump state, gravity starts at zero and returns when we release the jump key, or fullhop timer goes off
 var current_gravity = 0
 var target_speed = 0
-
+var jump_modifier = 1
+var jump_boost_modifier = 1
 
 func enter():
 	#ensure coyote time does not apply if we enter fall state from jump
@@ -22,8 +23,8 @@ func enter():
 	#gravity is zero at start of jump (comes back in after fullhop or on key release)
 	current_gravity = 0
 	#set y velocity to jump height and add jump boost if we are moving in a direction
-	parent.velocity.y = PlayerData.JUMP_VELOCITY
-	parent.velocity.x += sign(parent.velocity.x)*PlayerData.JUMP_BOOST
+	parent.velocity.y = PlayerData.JUMP_VELOCITY*jump_modifier
+	parent.velocity.x += sign(parent.velocity.x)*PlayerData.JUMP_BOOST*jump_boost_modifier
 	#set off fullhop timer to bring gravity back if player does not release jump
 	fullhop_timer.start(PlayerData.FULLHOP_LENGTH)
 	#calculate movement and set target speed
@@ -31,7 +32,8 @@ func enter():
 	target_speed = direction*SPEED
 	
 	parent.sprite.play(animation_name)
-	
+	jump_modifier = 1
+	jump_boost_modifier = 1
 	return
 	
 func exit():
@@ -46,6 +48,8 @@ func input_step(event: InputEvent) -> State:
 	if Input.is_action_just_released(PlayerData.controls["jump"]):
 		current_gravity = PlayerData.DEFAULT_GRAVITY
 		fullhop_timer.stop()
+	if Input.is_action_just_pressed(PlayerData.controls["glide"]):
+		return parent.glide_state
 	#if we input a jump, buffer in case we land
 	if Input.is_action_just_pressed(PlayerData.controls["jump"]):
 		jump_buffer_timer.start(PlayerData.JUMP_BUFFER_LENGTH)

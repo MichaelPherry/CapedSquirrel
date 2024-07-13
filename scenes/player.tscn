@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://bilrshh6koro0"]
+[gd_scene load_steps=13 format=3 uid="uid://bilrshh6koro0"]
 
 [ext_resource type="Script" path="res://scripts/player scripts/player.gd" id="1_w235m"]
 [ext_resource type="Texture2D" uid="uid://kre15xebqvbh" path="res://Sprites/Squirrel/aidan_squirrel.png" id="2_jh824"]
@@ -8,12 +8,13 @@
 [ext_resource type="Script" path="res://scripts/player scripts/player state machines/Jumping.gd" id="6_8s5i6"]
 [ext_resource type="Script" path="res://scripts/player scripts/player state machines/Jump_peak.gd" id="7_g71tp"]
 [ext_resource type="Script" path="res://scripts/player scripts/player state machines/Falling.gd" id="8_a6b5p"]
+[ext_resource type="Script" path="res://scenes/Gliding.gd" id="9_tfv5c"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_7xy0o"]
 atlas = ExtResource("2_jh824")
 region = Rect2(0, 0, 16, 32)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_0idau"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_mpl6g"]
 animations = [{
 "frames": [{
 "duration": 1.0,
@@ -28,8 +29,14 @@ animations = [{
 radius = 4.0
 height = 20.0
 
-[node name="Player" type="CharacterBody2D"]
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("walk_state", "idle_state", "jump_peak_state", "fall_state", "jump_state", "glide_state")]
 script = ExtResource("1_w235m")
+walk_state = NodePath("Player_state_machine/Walking")
+idle_state = NodePath("Player_state_machine/Idle")
+jump_peak_state = NodePath("Player_state_machine/Jump_peak")
+fall_state = NodePath("Player_state_machine/Falling")
+jump_state = NodePath("Player_state_machine/Jumping")
+glide_state = NodePath("Player_state_machine/Gliding")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_mpl6g")
@@ -43,41 +50,28 @@ shape = SubResource("CapsuleShape2D_aehqx")
 script = ExtResource("3_fcdwa")
 starting_state = NodePath("Idle")
 
-[node name="Idle" type="Node" parent="Player_state_machine" node_paths=PackedStringArray("walk_state", "jump_state", "fall_state")]
+[node name="Idle" type="Node" parent="Player_state_machine"]
 script = ExtResource("4_2hnud")
-walk_state = NodePath("../Walking")
-jump_state = NodePath("../Jumping")
-fall_state = NodePath("../Falling")
 animation_name = "idle"
 
-[node name="Walking" type="Node" parent="Player_state_machine" node_paths=PackedStringArray("jump_state", "fall_state", "idle_state")]
+[node name="Walking" type="Node" parent="Player_state_machine"]
 script = ExtResource("5_c3vt5")
-jump_state = NodePath("../Jumping")
-fall_state = NodePath("../Falling")
-idle_state = NodePath("../Idle")
 animation_name = "idle"
 
-[node name="Jumping" type="Node" parent="Player_state_machine" node_paths=PackedStringArray("walk_state", "idle_state", "jump_peak_state", "fall_state")]
+[node name="Jumping" type="Node" parent="Player_state_machine"]
 script = ExtResource("6_8s5i6")
-walk_state = NodePath("../Walking")
-idle_state = NodePath("../Idle")
-jump_peak_state = NodePath("../Jump_peak")
-fall_state = NodePath("../Falling")
 animation_name = "idle"
 
-[node name="Jump_peak" type="Node" parent="Player_state_machine" node_paths=PackedStringArray("walk_state", "idle_state", "fall_state", "jump_state")]
+[node name="Jump_peak" type="Node" parent="Player_state_machine"]
 script = ExtResource("7_g71tp")
-walk_state = NodePath("../Walking")
-idle_state = NodePath("../Idle")
-fall_state = NodePath("../Falling")
-jump_state = NodePath("../Jumping")
 animation_name = "idle"
 
-[node name="Falling" type="Node" parent="Player_state_machine" node_paths=PackedStringArray("jump_state", "walk_state", "idle_state")]
+[node name="Falling" type="Node" parent="Player_state_machine"]
 script = ExtResource("8_a6b5p")
-jump_state = NodePath("../Jumping")
-walk_state = NodePath("../Walking")
-idle_state = NodePath("../Idle")
+animation_name = "idle"
+
+[node name="Gliding" type="Node" parent="Player_state_machine"]
+script = ExtResource("9_tfv5c")
 animation_name = "idle"
 
 [node name="coyote_timer" type="Timer" parent="."]
