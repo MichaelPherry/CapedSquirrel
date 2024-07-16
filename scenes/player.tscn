@@ -30,13 +30,16 @@ animations = [{
 radius = 4.0
 height = 20.0
 
+
 [node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("walk_state", "idle_state", "jump_peak_state", "fall_state", "jump_state", "glide_state", "walljump_state")]
+
 script = ExtResource("1_w235m")
 walk_state = NodePath("Player_state_machine/Walking")
 idle_state = NodePath("Player_state_machine/Idle")
 jump_peak_state = NodePath("Player_state_machine/Jump_peak")
 fall_state = NodePath("Player_state_machine/Falling")
 jump_state = NodePath("Player_state_machine/Jumping")
+
 glide_state = NodePath("Player_state_machine/Gliding")
 walljump_state = NodePath("Player_state_machine/Wall_Jump")
 
