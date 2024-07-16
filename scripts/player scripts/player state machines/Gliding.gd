@@ -5,7 +5,7 @@ var state_name = "gliding"
 #"pointer" to timer
 @onready var jump_buffer_timer = $"../../jump_buffer_timer"
 
-const GLIDE_BOOST = -64
+const GLIDE_BOOST = -48
 const GLIDE_GRAV_MOD = .32
 
 var GRAVITY = PlayerData.DEFAULT_GRAVITY*GLIDE_GRAV_MOD
@@ -62,12 +62,5 @@ func physics_step(delta) -> State:
 	#want to maybe implement a grace window where u get a boost in your jump if ur just about to clear an obstacle
 	parent.move_and_slide()
 	
-	if parent.is_on_floor():
-		if PlayerData.jump_buffered:
-			return parent.jump_state
-		if parent.velocity.x == 0:
-			return parent.idle_state
-		else:
-			return parent.walk_state
-	return null
+	return parent.handle_air_collision()
 

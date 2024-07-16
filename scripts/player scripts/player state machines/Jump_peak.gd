@@ -50,27 +50,15 @@ func physics_step(delta) -> State:
 	#calculate acceleration and gravity, update velocity and move
 	var temp_accel = PlayerData.calcTempAccel(target_speed, parent.velocity.x, SPEED, ACCEL_MOD, PlayerData.AIR_DRAG)
 	
-	parent.velocity.x += (temp_accel * delta)
+	parent.velocity.x += (temp_accel * delta*PlayerData.accel_modifier)
 	parent.velocity.y += (GRAVITY*delta)
 	#want to maybe implement a grace window where u get a boost in your jump if ur just about to clear an obstacle
 	parent.move_and_slide()
 	
-	#if player hits a flat ceiling, immediately enter falling state
-	#ommitted cuz it didnt feel good
-	#for i in parent.get_slide_collision_count():
-		#if parent.get_slide_collision(i).get_normal() == Vector2(0, 1):
-			#parent.velocity.y = 0
-			#return fall_state
-			
-	#otherwise check if our jump has interrupted and we landed 
-		#(edit: i dont think this is actually possible since we must be traveling upwards, but its here just in case)
-	if parent.is_on_floor():
-		if PlayerData.jump_buffered:
-			return parent.jump_state
-		if parent.velocity.x == 0:
-			return parent.idle_state
-		else:
-			return parent.walk_state
+	var collision_state = parent.handle_air_collision()
+	if collision_state:
+		return collision_state
+		
 	#finally, enter the fall state if we are traveling fast enough
 	if parent.velocity.y > PlayerData.HANG_THRESHOLD:
 		return parent.fall_state

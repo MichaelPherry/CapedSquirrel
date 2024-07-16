@@ -59,23 +59,14 @@ func physics_step(delta) -> State:
 	#calculate acceleration and update velocities
 	var temp_accel = PlayerData.calcTempAccel(target_speed, parent.velocity.x, SPEED, PlayerData.AERIAL_ACCEL_MOD, PlayerData.AIR_DRAG)
 	
-	parent.velocity.x += temp_accel * delta
+	parent.velocity.x += (temp_accel * delta*PlayerData.accel_modifier)
 	parent.velocity.y += GRAVITY*delta
 	#ensure we dont pass max fall speed
 	if parent.velocity.y > MAX_FALL_SPEED:
 		parent.velocity.y = MAX_FALL_SPEED
 	#move player and slide against walls and ceilings
 	parent.move_and_slide()
-	#if we end up on the floor, leave falling state, if a jump is buffered enter jump state, otherwise idle or walking 
-	if parent.is_on_floor():
-		if PlayerData.jump_buffered:
-			return parent.jump_state
-		if parent.velocity.x == 0:
-			return parent.idle_state
-		else:
-			return parent.walk_state
-	
-	return null
+	return parent.handle_air_collision()
 
 
 
