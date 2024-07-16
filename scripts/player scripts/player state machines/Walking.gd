@@ -17,6 +17,10 @@ func _ready():
 func enter():
 	#re-enables coyote time if we fall off a ledge
 	parent.fall_state.can_jump = true
+	
+	parent.jump_state.wall_jump = 0
+	parent.jump_state.jump_modifier = 1
+	parent.jump_state.jump_boost_modifier = 1
 	#get movement input
 	var direction = Input.get_axis(PlayerData.controls["left"], PlayerData.controls["right"])
 	target_speed = direction*SPEED
