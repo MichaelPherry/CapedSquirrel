@@ -61,6 +61,9 @@ func physics_step(delta) -> State:
 	
 	parent.velocity.x += (temp_accel * delta*PlayerData.accel_modifier)
 	parent.velocity.y += GRAVITY*delta
+		
+	if Global.is_hooked:
+		return parent.hooked_state
 	#ensure we dont pass max fall speed
 	if parent.velocity.y > MAX_FALL_SPEED:
 		parent.velocity.y = MAX_FALL_SPEED

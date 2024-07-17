@@ -59,7 +59,10 @@ func physics_step(delta) -> State:
 	parent.velocity.y += (current_gravity*delta)
 	
 	parent.move_and_slide()
-	
+		
+	if Global.is_hooked:
+		return parent.hooked_state
+		
 	if !(parent.is_on_wall()):
 		parent.jump_state.jump_modifier = 1
 		parent.jump_state.jump_boost_modifier = 1

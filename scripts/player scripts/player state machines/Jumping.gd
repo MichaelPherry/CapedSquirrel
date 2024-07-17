@@ -77,6 +77,9 @@ func physics_step(delta) -> State:
 	parent.velocity.y += current_gravity * delta
 	parent.move_and_slide()
 	
+	if Global.is_hooked:
+		return parent.hooked_state
+	
 	#if player hits a wall, enter wall jump
 	
 	var collision_state = parent.handle_air_collision()

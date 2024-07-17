@@ -54,6 +54,8 @@ func physics_step(delta) -> State:
 	parent.velocity.y += PlayerData.DEFAULT_GRAVITY*delta
 
 	parent.move_and_slide()
+	if Global.is_hooked:
+		return parent.hooked_state
 	if !parent.is_on_floor():
 		return parent.fall_state
 	if parent.velocity.x == 0:

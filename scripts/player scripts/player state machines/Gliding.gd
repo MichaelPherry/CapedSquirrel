@@ -61,6 +61,7 @@ func physics_step(delta) -> State:
 	parent.velocity.y += (GRAVITY*delta)
 	#want to maybe implement a grace window where u get a boost in your jump if ur just about to clear an obstacle
 	parent.move_and_slide()
-	
+	if Global.is_hooked:
+		return parent.hooked_state
 	return parent.handle_air_collision()
 

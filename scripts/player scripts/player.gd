@@ -15,12 +15,14 @@ var jump_state: State
 var glide_state: State
 @export
 var walljump_state: State
+@export
+var hooked_state: State
 
 @onready var state_machine = $Player_state_machine
 
 @onready var sprite = $AnimatedSprite2D
 
-
+@onready var grapple_scene = preload("res://scenes/grapple.tscn")
 
 func _ready():
 	state_machine.init(self)
@@ -51,6 +53,8 @@ func handle_air_collision():
 		PlayerData.accel_modifier = 1
 		if PlayerData.jump_buffered:
 			return jump_state
+		if Global.is_hooked:
+			return hooked_state
 		if self.velocity.x == 0:
 			return idle_state
 		else:
@@ -64,6 +68,19 @@ func handle_air_collision():
 				
 	return null
 	
+func _input(event):
+	if event is InputEventMouseButton:
+		var grapple = grapple_scene.instantiate()
+		if Input.is_action_just_pressed("shoot"):
+			var dir = get_global_mouse_position() - self.position
+			grapple.shoot(dir, self.position)
+			add_child(grapple)
+	
+		else:
+			#shoot.emit(0, self.position, false)
+			grapple.release()
+			var child = get_node("grapple")
+			self.remove_child(child)
 
 #unbuffers jump a few frames after we press jump
 func _on_jump_buffer_timer_timeout():
