@@ -9,7 +9,7 @@ var state_name = "jump_peak"
 
 #multipliers to increase velocity/acceleration respectively
 const ACCEL_MOD = 1.5
-const VEL_MOD = 1.35
+const VEL_MOD = 1.3
 #speed (base speed times velocity modifier )
 const SPEED = PlayerData.BASE_SPEED*VEL_MOD
 
@@ -50,7 +50,7 @@ func physics_step(delta) -> State:
 	#calculate acceleration and gravity, update velocity and move
 	var temp_accel = PlayerData.calcTempAccel(target_speed, parent.velocity.x, SPEED, ACCEL_MOD, PlayerData.AIR_DRAG)
 	
-	parent.velocity.x += (temp_accel * delta*PlayerData.accel_modifier)
+	parent.velocity.x += (temp_accel * delta)
 	parent.velocity.y += (GRAVITY*delta)
 	#want to maybe implement a grace window where u get a boost in your jump if ur just about to clear an obstacle
 	parent.move_and_slide()

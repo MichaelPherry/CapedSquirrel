@@ -35,7 +35,7 @@ const FULLHOP_LENGTH = .2
 #booleans dealing with player
 var jump_buffered = false
 var conserve_momentum = true
-var accel_modifier = 1
+var ignore_accel = false
 #dictionary respresenting control scheme
 var controls = {"left": "ui_left", "right": "ui_right", "jump": "ui_accept", "glide": "shift_key", "crouch": "ui_down"}
 
@@ -43,6 +43,8 @@ func calcTempAccel(target_speed, current_speed, top_speed, accel_mod = 1, drag =
 	#magic function to calculate acceleration based on magic stuff
 	var base_accel = BASE_ACCELERATION
 	var speed_diff = target_speed-current_speed
+	if ignore_accel:
+		return drag*(sign(speed_diff))
 	
 	if (abs(target_speed) < STOP_VEL):
 		base_accel = BASE_DECCELERATION

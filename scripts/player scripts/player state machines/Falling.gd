@@ -22,6 +22,7 @@ const MAX_FALL_SPEED = 300
 var can_jump = false
 var target_speed = 0
 
+var wall_jump = false
 
 func enter():
 	#when we have just entered fall, set a timer to remove our jump after a short duration (5ish frames)
@@ -38,12 +39,15 @@ func enter():
 	
 func exit():
 	coyote_timer.stop()
+	wall_jump = false
 	return
 	
 func input_step(event: InputEvent) -> State:
 	#get movement and jump inputs, if jumped and still in coyote time, enter jump, otherwise buffer jump 
 	if Input.is_action_just_pressed(PlayerData.controls["jump"]):
 		if can_jump:
+			if wall_jump:
+				return parent.walljump_state
 			return parent.jump_state
 		else:
 			jump_buffer_timer.start(PlayerData.JUMP_BUFFER_LENGTH)
@@ -59,16 +63,17 @@ func physics_step(delta) -> State:
 	#calculate acceleration and update velocities
 	var temp_accel = PlayerData.calcTempAccel(target_speed, parent.velocity.x, SPEED, PlayerData.AERIAL_ACCEL_MOD, PlayerData.AIR_DRAG)
 	
-	parent.velocity.x += (temp_accel * delta*PlayerData.accel_modifier)
+	parent.velocity.x += (temp_accel * delta)
 	parent.velocity.y += GRAVITY*delta
+	
+	if parent.velocity.y > MAX_FALL_SPEED:
+		parent.velocity.y = MAX_FALL_SPEED
+		
+	parent.move_and_slide()
 		
 	if Global.is_hooked:
 		return parent.hooked_state
-	#ensure we dont pass max fall speed
-	if parent.velocity.y > MAX_FALL_SPEED:
-		parent.velocity.y = MAX_FALL_SPEED
-	#move player and slide against walls and ceilings
-	parent.move_and_slide()
+	
 	return parent.handle_air_collision()
 
 

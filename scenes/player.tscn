@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://bilrshh6koro0"]
+[gd_scene load_steps=16 format=3 uid="uid://bilrshh6koro0"]
 
 [ext_resource type="Script" path="res://scripts/player scripts/player.gd" id="1_w235m"]
 [ext_resource type="Texture2D" uid="uid://kre15xebqvbh" path="res://Sprites/Squirrel/aidan_squirrel.png" id="2_jh824"]
@@ -9,8 +9,9 @@
 [ext_resource type="Script" path="res://scripts/player scripts/player state machines/Jump_peak.gd" id="7_g71tp"]
 [ext_resource type="Script" path="res://scripts/player scripts/player state machines/Falling.gd" id="8_a6b5p"]
 [ext_resource type="Script" path="res://scripts/player scripts/player state machines/Gliding.gd" id="9_tfv5c"]
-[ext_resource type="Script" path="res://scripts/player scripts/player state machines/Walljump.gd" id="10_aoefu"]
+[ext_resource type="Script" path="res://scripts/player scripts/player state machines/WallCling.gd" id="10_aoefu"]
 [ext_resource type="Script" path="res://scripts/player scripts/player state machines/Hooked.gd" id="11_pbovq"]
+[ext_resource type="Script" path="res://scripts/player scripts/player state machines/Wall_jump.gd" id="12_nyltu"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_7xy0o"]
 atlas = ExtResource("2_jh824")
@@ -31,7 +32,7 @@ animations = [{
 radius = 4.0
 height = 20.0
 
-[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("walk_state", "idle_state", "jump_peak_state", "fall_state", "jump_state", "glide_state", "walljump_state", "hooked_state")]
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("walk_state", "idle_state", "jump_peak_state", "fall_state", "jump_state", "glide_state", "wallcling_state", "walljump_state", "hooked_state")]
 script = ExtResource("1_w235m")
 walk_state = NodePath("Player_state_machine/Walking")
 idle_state = NodePath("Player_state_machine/Idle")
@@ -39,7 +40,8 @@ jump_peak_state = NodePath("Player_state_machine/Jump_peak")
 fall_state = NodePath("Player_state_machine/Falling")
 jump_state = NodePath("Player_state_machine/Jumping")
 glide_state = NodePath("Player_state_machine/Gliding")
-walljump_state = NodePath("Player_state_machine/Wall_Jump")
+wallcling_state = NodePath("Player_state_machine/Wall_Cling")
+walljump_state = NodePath("Player_state_machine/Wall_jump")
 hooked_state = NodePath("Player_state_machine/Hooked")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
@@ -78,11 +80,16 @@ animation_name = "idle"
 script = ExtResource("9_tfv5c")
 animation_name = "idle"
 
-[node name="Wall_Jump" type="Node" parent="Player_state_machine"]
+[node name="Wall_Cling" type="Node" parent="Player_state_machine"]
 script = ExtResource("10_aoefu")
+animation_name = "idle"
 
 [node name="Hooked" type="Node" parent="Player_state_machine"]
 script = ExtResource("11_pbovq")
+animation_name = "idle"
+
+[node name="Wall_jump" type="Node" parent="Player_state_machine"]
+script = ExtResource("12_nyltu")
 
 [node name="coyote_timer" type="Timer" parent="."]
 one_shot = true
@@ -93,6 +100,13 @@ one_shot = true
 [node name="jump_buffer_timer" type="Timer" parent="."]
 one_shot = true
 
+[node name="walljump_timer" type="Timer" parent="."]
+one_shot = true
+
+[node name="ignore_accel_timer" type="Timer" parent="."]
+
 [connection signal="timeout" from="coyote_timer" to="Player_state_machine/Falling" method="_on_coyote_timer_timeout"]
 [connection signal="timeout" from="fullhop_timer" to="Player_state_machine/Jumping" method="_on_fullhop_timer_timeout"]
 [connection signal="timeout" from="jump_buffer_timer" to="." method="_on_jump_buffer_timer_timeout"]
+[connection signal="timeout" from="walljump_timer" to="Player_state_machine/Wall_jump" method="_on_walljump_timer_timeout"]
+[connection signal="timeout" from="ignore_accel_timer" to="." method="_on_ignore_accel_timer_timeout"]

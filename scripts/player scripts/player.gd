@@ -14,6 +14,8 @@ var jump_state: State
 @export 
 var glide_state: State
 @export
+var wallcling_state: State
+@export
 var walljump_state: State
 @export
 var hooked_state: State
@@ -32,6 +34,7 @@ func _unhandled_input(event) -> void:
 
 
 func _physics_process(delta):
+	
 	state_machine.physics_step(delta)
 	
 
@@ -46,11 +49,7 @@ func handle_air_collision():
 	#otherwise check if our jump has interrupted and we landed 
 		#(edit: i dont think this is actually possible since we must be traveling upwards, but its here just in case)
 	if self.is_on_floor():
-		jump_state.wall_jump = 0
-		jump_state.jump_modifier = 1
-		jump_state.jump_boost_modifier = 1
-		
-		PlayerData.accel_modifier = 1
+		PlayerData.ignore_accel = false
 		if PlayerData.jump_buffered:
 			return jump_state
 		if Global.is_hooked:
@@ -63,8 +62,9 @@ func handle_air_collision():
 	for i in self.get_slide_collision_count():
 		var norm_x = self.get_slide_collision(i).get_normal().x
 		if abs(norm_x) == 1:
-			jump_state.wall_jump = norm_x
-			return walljump_state
+			PlayerData.ignore_accel = false
+			walljump_state.wall_norm = norm_x
+			return wallcling_state
 				
 	return null
 	
@@ -89,3 +89,7 @@ func _on_jump_buffer_timer_timeout():
 	
 	
 	
+
+
+func _on_ignore_accel_timer_timeout():
+	PlayerData.ignore_accel = false

@@ -14,10 +14,11 @@ func init(parent: Object) -> void:
 func change_state(new_state: State) -> void:
 	if current_state:
 		current_state.exit()
-		
+	
 	current_state = new_state
 	current_state.enter()
-	print(current_state)
+	#print(current_state)
+	
 	
 func physics_step(delta: float) -> void:
 	var new_state = current_state.physics_step(delta)

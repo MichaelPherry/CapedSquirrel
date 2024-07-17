@@ -7,10 +7,6 @@ var state_name = "idle"
 func enter() -> void:
 	#ensure coyote_time if we enter fall state next
 	parent.fall_state.can_jump = true
-	
-	parent.jump_state.wall_jump = 0
-	parent.jump_state.jump_modifier = 1
-	parent.jump_state.jump_boost_modifier = 1
 	#zero velocity and play animation
 	parent.velocity.x = 0
 	parent.sprite.play(animation_name)

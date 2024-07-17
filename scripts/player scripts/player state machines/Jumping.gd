@@ -15,9 +15,6 @@ const SPEED = PlayerData.BASE_SPEED
 var current_gravity = 0
 var target_speed = 0
 
-var wall_jump = 0
-var jump_modifier = 1
-var jump_boost_modifier = 1
 
 
 func enter():
@@ -25,14 +22,11 @@ func enter():
 	parent.fall_state.can_jump = false
 	#gravity is zero at start of jump (comes back in after fullhop or on key release)
 	current_gravity = 0
-	parent.walljump_state.current_gravity = 0
+	parent.wallcling_state.current_gravity = 0
 	#set y velocity to jump height and add jump boost if we are moving in a direction
-	parent.velocity.y = PlayerData.JUMP_VELOCITY*jump_modifier
-	if wall_jump == 0:
-		parent.velocity.x += sign(parent.velocity.x)*PlayerData.JUMP_BOOST*jump_boost_modifier
-		
-	else:
-		parent.velocity.x = (SPEED*wall_jump)+(wall_jump*PlayerData.JUMP_BOOST*jump_boost_modifier)
+	parent.velocity.y = PlayerData.JUMP_VELOCITY
+	parent.velocity.x += sign(parent.velocity.x)*PlayerData.JUMP_BOOST
+	
 	#set off fullhop timer to bring gravity back if player does not release jump
 	fullhop_timer.start(PlayerData.FULLHOP_LENGTH)
 	#calculate movement and set target speed
@@ -41,14 +35,10 @@ func enter():
 	
 	parent.sprite.play(animation_name)
 	
-	jump_modifier = 1
-	jump_boost_modifier = 1
-	wall_jump = 0
 	return
 	
 func exit():
-	PlayerData.accel_modifier = 1
-	return
+	pass
 	
 func input_step(event: InputEvent) -> State:
 	#calculate movement and set target speed
@@ -57,6 +47,7 @@ func input_step(event: InputEvent) -> State:
 	# bring back gravity of jump key released 
 	if Input.is_action_just_released(PlayerData.controls["jump"]):
 		current_gravity = PlayerData.DEFAULT_GRAVITY
+		parent.wallcling_state.current_gravity = parent.wallcling_state.GRAVITY
 		fullhop_timer.stop()
 	if Input.is_action_just_pressed(PlayerData.controls["glide"]):
 		return parent.glide_state
@@ -73,8 +64,8 @@ func physics_step(delta) -> State:
 	#calc accel and gravity and update velocities and move character
 	var temp_accel = PlayerData.calcTempAccel(target_speed, parent.velocity.x, SPEED, PlayerData.AERIAL_ACCEL_MOD, PlayerData.AIR_DRAG)
 	
-	parent.velocity.x += (temp_accel * delta*PlayerData.accel_modifier)
-	parent.velocity.y += current_gravity * delta
+	parent.velocity.x += (temp_accel * delta)
+	parent.velocity.y += (current_gravity * delta)
 	parent.move_and_slide()
 	
 	if Global.is_hooked:
@@ -97,7 +88,7 @@ func physics_step(delta) -> State:
 #brings back gravity after a certain amount of time if we dont release jump
 func _on_fullhop_timer_timeout():
 	current_gravity = PlayerData.DEFAULT_GRAVITY
-	parent.walljump_state.current_gravity = parent.walljump_state.GRAVITY
+	parent.wallcling_state.current_gravity = parent.wallcling_state.GRAVITY
 	
 
 
