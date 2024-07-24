@@ -88,7 +88,11 @@ func physics_step(delta) -> State:
 #brings back gravity after a certain amount of time if we dont release jump
 func _on_fullhop_timer_timeout():
 	current_gravity = PlayerData.DEFAULT_GRAVITY
-	parent.wallcling_state.current_gravity = parent.wallcling_state.GRAVITY
+	if parent.velocity.y > 0:
+			parent.wallcling_state.current_gravity = parent.wallcling_state.GRAVITY
+	else:
+			parent.wallcling_state.current_gravity  = PlayerData.DEFAULT_GRAVITY
+	
 	
 
 

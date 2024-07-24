@@ -1,0 +1,21 @@
+[gd_scene load_steps=5 format=3 uid="uid://bmscpe8b2c4im"]
+
+[ext_resource type="Script" path="res://scripts/Camera scripts/Camera.gd" id="1_ho2mw"]
+[ext_resource type="Script" path="res://scripts/state machine/state_machine.gd" id="2_r362b"]
+[ext_resource type="Script" path="res://scripts/Camera scripts/Default.gd" id="3_ejwh6"]
+[ext_resource type="Script" path="res://scripts/Camera scripts/Transition.gd" id="4_rr4n4"]
+
+[node name="Camera" type="Camera2D" node_paths=PackedStringArray("default_state", "transition_state")]
+script = ExtResource("1_ho2mw")
+default_state = NodePath("Camera_state_machine/Default")
+transition_state = NodePath("Camera_state_machine/Transition")
+
+[node name="Camera_state_machine" type="Node" parent="." node_paths=PackedStringArray("starting_state")]
+script = ExtResource("2_r362b")
+starting_state = NodePath("Default")
+
+[node name="Default" type="Node" parent="Camera_state_machine"]
+script = ExtResource("3_ejwh6")
+
+[node name="Transition" type="Node" parent="Camera_state_machine"]
+script = ExtResource("4_rr4n4")

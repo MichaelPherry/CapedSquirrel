@@ -9,13 +9,13 @@ var state_name = "jump_peak"
 
 #multipliers to increase velocity/acceleration respectively
 const ACCEL_MOD = 1.5
-const VEL_MOD = 1.3
+const VEL_MOD = 1.2
 #speed (base speed times velocity modifier )
 const SPEED = PlayerData.BASE_SPEED*VEL_MOD
 
 
 #lowered gravity at apex of jump
-const GRAVITY_MODIFIER = .75
+const GRAVITY_MODIFIER = .88
 var GRAVITY = PlayerData.DEFAULT_GRAVITY*GRAVITY_MODIFIER
 
 var target_speed = 0

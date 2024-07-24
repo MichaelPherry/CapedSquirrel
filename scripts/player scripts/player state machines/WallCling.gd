@@ -41,7 +41,10 @@ func exit():
 func input_step(event: InputEvent) -> State:
 	#get input, buffer jump if pressed and calculate movement direction
 	if !(Input.is_action_pressed(PlayerData.controls["jump"])):
-		current_gravity = GRAVITY
+		if parent.velocity.y > 0:
+			current_gravity = GRAVITY
+		else:
+			current_gravity = PlayerData.DEFAULT_GRAVITY
 	if Input.is_action_just_pressed(PlayerData.controls["jump"]):
 		return parent.walljump_state
 	var dir = Input.get_axis(PlayerData.controls["left"], PlayerData.controls["right"])

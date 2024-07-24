@@ -20,6 +20,12 @@ config/icon="res://icon.svg"
 Global="*res://scripts/Global.gd"
 PlayerData="*res://scripts/player scripts/player_data.gd"
 
+[display]
+
+window/size/viewport_width=320
+window/size/viewport_height=180
+window/stretch/mode="viewport"
+
 [editor]
 
 run/main_run_args=" --rendering-driver opengl3"

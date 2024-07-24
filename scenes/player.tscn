@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://bilrshh6koro0"]
+[gd_scene load_steps=17 format=3 uid="uid://bilrshh6koro0"]
 
 [ext_resource type="Script" path="res://scripts/player scripts/player.gd" id="1_w235m"]
 [ext_resource type="Texture2D" uid="uid://kre15xebqvbh" path="res://Sprites/Squirrel/aidan_squirrel.png" id="2_jh824"]
@@ -12,6 +12,7 @@
 [ext_resource type="Script" path="res://scripts/player scripts/player state machines/WallCling.gd" id="10_aoefu"]
 [ext_resource type="Script" path="res://scripts/player scripts/player state machines/Hooked.gd" id="11_pbovq"]
 [ext_resource type="Script" path="res://scripts/player scripts/player state machines/Wall_jump.gd" id="12_nyltu"]
+[ext_resource type="Script" path="res://scripts/player scripts/player state machines/Frozen.gd" id="13_vny8h"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_7xy0o"]
 atlas = ExtResource("2_jh824")
@@ -32,7 +33,7 @@ animations = [{
 radius = 4.0
 height = 20.0
 
-[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("walk_state", "idle_state", "jump_peak_state", "fall_state", "jump_state", "glide_state", "wallcling_state", "walljump_state", "hooked_state")]
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("walk_state", "idle_state", "jump_peak_state", "fall_state", "jump_state", "glide_state", "wallcling_state", "walljump_state", "hooked_state", "frozen_state")]
 script = ExtResource("1_w235m")
 walk_state = NodePath("Player_state_machine/Walking")
 idle_state = NodePath("Player_state_machine/Idle")
@@ -43,6 +44,7 @@ glide_state = NodePath("Player_state_machine/Gliding")
 wallcling_state = NodePath("Player_state_machine/Wall_Cling")
 walljump_state = NodePath("Player_state_machine/Wall_jump")
 hooked_state = NodePath("Player_state_machine/Hooked")
+frozen_state = NodePath("Player_state_machine/Frozen")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_mpl6g")
@@ -90,6 +92,9 @@ animation_name = "idle"
 
 [node name="Wall_jump" type="Node" parent="Player_state_machine"]
 script = ExtResource("12_nyltu")
+
+[node name="Frozen" type="Node" parent="Player_state_machine"]
+script = ExtResource("13_vny8h")
 
 [node name="coyote_timer" type="Timer" parent="."]
 one_shot = true

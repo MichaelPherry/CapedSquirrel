@@ -1,6 +1,7 @@
 extends CharacterBody2D
 
 
+
 @export
 var walk_state: State
 @export
@@ -19,6 +20,8 @@ var wallcling_state: State
 var walljump_state: State
 @export
 var hooked_state: State
+@export
+var frozen_state: State
 
 @onready var state_machine = $Player_state_machine
 
@@ -89,3 +92,6 @@ func _on_jump_buffer_timer_timeout():
 
 func _on_ignore_accel_timer_timeout():
 	PlayerData.ignore_accel = false
+
+
+

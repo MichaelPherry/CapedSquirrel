@@ -6,7 +6,7 @@ var state_name = "gliding"
 @onready var jump_buffer_timer = $"../../jump_buffer_timer"
 
 const GLIDE_BOOST = -48
-const GLIDE_GRAV_MOD = .32
+const GLIDE_GRAV_MOD = .35
 
 var GRAVITY = PlayerData.DEFAULT_GRAVITY*GLIDE_GRAV_MOD
 
@@ -14,6 +14,8 @@ const SPEED_MOD = 1.3
 const ACCEL_MOD = .75
 
 var SPEED = PlayerData.BASE_SPEED*SPEED_MOD
+
+const MAX_FALL_SPEED = 100
 
 var target_speed = 0
 
@@ -59,6 +61,8 @@ func physics_step(delta) -> State:
 	
 	parent.velocity.x += (temp_accel * delta)
 	parent.velocity.y += (GRAVITY*delta)
+	if parent.velocity.y > MAX_FALL_SPEED:
+		parent.velocity.y = MAX_FALL_SPEED
 	#want to maybe implement a grace window where u get a boost in your jump if ur just about to clear an obstacle
 	parent.move_and_slide()
 	if Global.is_hooked:

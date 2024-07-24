@@ -16,8 +16,8 @@ const WALLJUMP_HEIGHT = .8
 const ACCEL_MOD = PlayerData.AERIAL_ACCEL_MOD*2
 const VEL_MOD = 1.5
 
-const TIME_IN_WALLJUMP = .24
-const TIME_IN_NOACCEL = .18
+const TIME_IN_WALLJUMP = .12
+const TIME_IN_NOACCEL = .08
 
 var GRAVITY = PlayerData.DEFAULT_GRAVITY
 
