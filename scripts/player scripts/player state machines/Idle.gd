@@ -7,6 +7,7 @@ var state_name = "idle"
 func enter() -> void:
 	#ensure coyote_time if we enter fall state next
 	parent.fall_state.can_jump = true
+	Global.can_hook = true
 	#zero velocity and play animation
 	parent.velocity.x = 0
 	parent.sprite.play(animation_name)
@@ -26,6 +27,7 @@ func input_step(event: InputEvent) -> State:
 	
 	
 func physics_step(delta) -> State:
+	Global.can_hook = true
 	#add gravity and move character
 	parent.velocity.y += PlayerData.DEFAULT_GRAVITY*delta
 	parent.move_and_slide()
@@ -37,4 +39,3 @@ func physics_step(delta) -> State:
 		return parent.fall_state
 		
 	return null
-
