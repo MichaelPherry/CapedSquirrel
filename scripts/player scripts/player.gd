@@ -44,8 +44,6 @@ func _process(delta):
 
 func handle_air_collision():
 	
-
-	
 	#otherwise check if our jump has interrupted and we landed 
 		#(edit: i dont think this is actually possible since we must be traveling upwards, but its here just in case)
 	if self.is_on_floor():
@@ -69,15 +67,14 @@ func handle_air_collision():
 	return null
 	
 func _input(event):
-	if event is InputEventMouseButton:
+	if event is InputEventMouseButton: # or InputEventKey: #or InputEventJoypadButton:
 		var grapple = grapple_scene.instantiate()
-		if Input.is_action_just_pressed("shoot"):
+		if Input.is_action_just_pressed("shoot") and Global.can_hook:
 			var dir = get_global_mouse_position() - self.position
 			grapple.shoot(dir, self.position)
 			add_child(grapple)
-	
+		
 		else:
-			#shoot.emit(0, self.position, false)
 			grapple.release()
 			var child = get_node("grapple")
 			self.remove_child(child)
