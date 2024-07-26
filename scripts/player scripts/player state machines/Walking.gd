@@ -17,6 +17,7 @@ func _ready():
 func enter():
 	#re-enables coyote time if we fall off a ledge
 	parent.fall_state.can_jump = true
+	Global.can_hook = true
 	
 	#get movement input
 	var direction = Input.get_axis(PlayerData.controls["left"], PlayerData.controls["right"])
@@ -44,6 +45,7 @@ func logic_step(delta) -> State:
 	return null
 	
 func physics_step(delta) -> State:
+	Global.can_hook = true
 	#calculate acceleration and gravity, update velocity and move
 	var temp_accel = PlayerData.calcTempAccel(target_speed, parent.velocity.x, SPEED)
 
@@ -59,4 +61,3 @@ func physics_step(delta) -> State:
 		return parent.idle_state
 		
 	return null
-
