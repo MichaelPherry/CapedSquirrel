@@ -5,7 +5,7 @@ extends Node2D
 var direction := Vector2(0,0)	# The direction in which the chain was shot
 var tip := Vector2(0,0)			# The global position the tip should be in
 
-var speed : int = 700
+var speed : int = 50
 var flying = false
 
 var player_pos
@@ -14,8 +14,8 @@ func shoot(direct, pos):
 	direction = direct.normalized()
 	player_pos = pos
 	Global.hook_pos = pos
-	if Global.upRight == true:
-		flying = true
+	#if Global.upRight == true:
+	flying = true
 	
 func release():
 	flying = false

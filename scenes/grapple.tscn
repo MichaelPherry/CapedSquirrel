@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://busxs5bspth3h"]
+[gd_scene load_steps=5 format=3 uid="uid://busxs5bspth3h"]
 
 [ext_resource type="Script" path="res://scripts/grapple.gd" id="1_m8o7x"]
 [ext_resource type="Texture2D" uid="uid://cpc70s0bbcq45" path="res://Sprites/hook/hook.png" id="2_t5vca"]
+[ext_resource type="Texture2D" uid="uid://c6i07rfq64nep" path="res://Sprites/hook/rope.png" id="2_xdejg"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_22swq"]
 radius = 2.0
@@ -10,13 +11,21 @@ height = 4.0
 [node name="grapple" type="Node2D"]
 script = ExtResource("1_m8o7x")
 
+[node name="Links" type="Sprite2D" parent="."]
+texture_repeat = 2
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("2_xdejg")
+offset = Vector2(0, 185)
+region_enabled = true
+region_rect = Rect2(0, 0, 16, 360)
+
 [node name="Tip" type="CharacterBody2D" parent="."]
 collision_layer = 2
 collision_mask = 2
 
 [node name="Hook" type="Sprite2D" parent="Tip"]
 position = Vector2(-1.19209e-07, -1.19209e-07)
-scale = Vector2(0.242187, 0.242187)
+scale = Vector2(0.4, 0.4)
 texture = ExtResource("2_t5vca")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Tip"]

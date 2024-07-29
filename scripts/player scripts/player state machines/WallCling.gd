@@ -19,7 +19,7 @@ var current_gravity = 0
 
 func enter():
 	parent.sprite.play(animation_name)
-	
+	Global.can_hook = true
 	
 	#get input, buffer jump if pressed and calculate movement direction
 	if PlayerData.jump_buffered:
