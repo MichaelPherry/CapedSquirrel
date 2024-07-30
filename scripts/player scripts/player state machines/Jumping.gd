@@ -22,7 +22,7 @@ func enter():
 	parent.fall_state.can_jump = false
 	#gravity is zero at start of jump (comes back in after fullhop or on key release)
 	current_gravity = 0
-	parent.wallcling_state.current_gravity = 0
+	
 	#set y velocity to jump height and add jump boost if we are moving in a direction
 	parent.velocity.y = PlayerData.JUMP_VELOCITY
 	parent.velocity.x += sign(parent.velocity.x)*PlayerData.JUMP_BOOST
@@ -75,7 +75,10 @@ func physics_step(delta) -> State:
 	
 	var collision_state = parent.handle_air_collision()
 	if collision_state:
-		return collision_state
+		if collision_state != parent.wallcling_state:
+			return collision_state
+		elif PlayerData.jump_buffered:
+			return parent.walljump_state
 		
 	#finally, enter the jump peak state (increases acceleration/velocity, lowers gravity)
 	if abs(parent.velocity.y) < PlayerData.HANG_THRESHOLD:
@@ -88,7 +91,8 @@ func physics_step(delta) -> State:
 #brings back gravity after a certain amount of time if we dont release jump
 func _on_fullhop_timer_timeout():
 	current_gravity = PlayerData.DEFAULT_GRAVITY
-	parent.wallcling_state.current_gravity = parent.wallcling_state.GRAVITY
+	
+	
 	
 
 

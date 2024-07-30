@@ -6,15 +6,15 @@ const state_name = "wallcling"
 const SPEED =PlayerData.BASE_SPEED*.5
 
 const WALLJUMP_BOOST = 2.5
-const WALLJUMP_HEIGHT = .65
+
 const WALLJUMP_ACCEL = .25
 
-const WALLJUMP_GRAV_MOD = .48
+const WALLJUMP_GRAV_MOD = 1.0
 
 var GRAVITY = PlayerData.DEFAULT_GRAVITY*WALLJUMP_GRAV_MOD
 
 var target_speed = 0
-var current_gravity = 0
+var current_gravity = GRAVITY
 
 
 func enter():
@@ -24,8 +24,7 @@ func enter():
 	#get input, buffer jump if pressed and calculate movement direction
 	if PlayerData.jump_buffered:
 		return parent.walljump_state
-	if !(Input.is_action_pressed(PlayerData.controls["jump"])):
-		current_gravity = GRAVITY
+
 	if Input.is_action_just_pressed(PlayerData.controls["jump"]):
 		return parent.walljump_state
 	var dir = Input.get_axis(PlayerData.controls["left"], PlayerData.controls["right"])
@@ -40,8 +39,7 @@ func exit():
 	
 func input_step(event: InputEvent) -> State:
 	#get input, buffer jump if pressed and calculate movement direction
-	if !(Input.is_action_pressed(PlayerData.controls["jump"])):
-		current_gravity = GRAVITY
+	
 	if Input.is_action_just_pressed(PlayerData.controls["jump"]):
 		return parent.walljump_state
 	var dir = Input.get_axis(PlayerData.controls["left"], PlayerData.controls["right"])
@@ -62,12 +60,14 @@ func physics_step(delta) -> State:
 	if Global.is_hooked:
 		return parent.hooked_state
 		
+	if parent.is_on_floor():
+		return parent.idle_state
+	
 	if !(parent.is_on_wall()):
 		parent.fall_state.can_jump = true
 		parent.fall_state.wall_jump = true
 		return parent.fall_state
-	if parent.is_on_floor():
-		return parent.idle_state
+	
 	return null
 		
 
