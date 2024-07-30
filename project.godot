@@ -17,7 +17,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-Global="*res://scripts/Global.gd"
+Global="*res://scripts/squirrel_global.gd"
 PlayerData="*res://scripts/player scripts/player_data.gd"
 
 [display]
