@@ -21,6 +21,8 @@ var target_speed = 0
 
 func enter():
 	parent.sprite.play(animation_name)
+	
+	PlayerData.ignore_accel = false
 	#boost in velocity if not holding down
 	if !(Input.is_action_pressed(PlayerData.controls["crouch"])):
 		parent.velocity.y = GLIDE_BOOST
@@ -30,7 +32,7 @@ func enter():
 	var direction = Input.get_axis(PlayerData.controls["left"], PlayerData.controls["right"])
 	target_speed = direction*SPEED
 	#set animation
-	parent.sprite.play(animation_name)
+	
 	return
 		
 	return
