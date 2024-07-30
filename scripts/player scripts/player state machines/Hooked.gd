@@ -16,6 +16,7 @@ var chain_velocity := Vector2(0,0)
 var target_speed = 0
 
 func enter() -> void:
+	Global.can_hook = false
 	var direction = Input.get_axis(PlayerData.controls["left"], PlayerData.controls["right"])
 	target_speed = direction*SPEED
 	#play the falling animation (not yet implemented all states still have "idle" track as their animation)
@@ -26,7 +27,8 @@ func exit() -> void:
 	return
 	
 func input_step(event: InputEvent) -> State:
-	var direction = Input.get_axis(PlayerData.controls["left"], PlayerData.controls["right"])
+	var direction = Input.get_axis(PlayerData.controls["left"], PlayerData.controls["right"]) 
+	#direction += Input.get_axis(PlayerData.controls["up"], PlayerData.controls["down"])
 	target_speed = direction*SPEED
 	return null
 	
@@ -34,10 +36,6 @@ func logic_step(delta: float) -> State:
 	return null
 	
 func physics_step(delta: float) -> State:
-	var temp_accel = PlayerData.calcTempAccel(target_speed, parent.velocity.x, SPEED)
-	parent.velocity.y += PlayerData.DEFAULT_GRAVITY*delta
-	parent.velocity.x += temp_accel * delta
-	parent.move_and_slide()
 	
 	chain_velocity = parent.to_local(Global.hook_pos).normalized() * CHAIN_PULL
 	if chain_velocity.y > 0:
@@ -46,6 +44,10 @@ func physics_step(delta: float) -> State:
 		chain_velocity.y *= 1.65
 
 	parent.velocity += chain_velocity
+	
+	var temp_accel = PlayerData.calcTempAccel(target_speed, parent.velocity.x, SPEED)
+	parent.velocity.y += PlayerData.DEFAULT_GRAVITY*delta
+	parent.move_and_slide()
 	
 	if not Global.is_hooked:
 		if !parent.is_on_floor():

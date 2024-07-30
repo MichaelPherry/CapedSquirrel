@@ -31,7 +31,7 @@ position = Vector2(291, -6)
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 position = Vector2(2, 1)
-zoom = Vector2(4, 4)
+zoom = Vector2(2, 2)
 
 [node name="TileMap" type="TileMap" parent="."]
 tile_set = SubResource("TileSet_g3ok3")
