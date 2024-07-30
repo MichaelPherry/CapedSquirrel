@@ -1,11 +1,12 @@
 extends Node2D
 
 @onready var links = $Links
+@onready var tip = $Tip
 
 var direction := Vector2(0,0)	# The direction in which the chain was shot
-var tip := Vector2(0,0)			# The global position the tip should be in
+#var tip := Vector2(0,0)			# The global position the tip should be in
 
-var speed : int = 50
+var speed : int = 700
 var flying = false
 
 var player_pos
@@ -32,14 +33,15 @@ func _process(delta):
 		
 	var tip_loc = to_local(Global.hook_pos)
 	links.rotation = self.position.angle_to_point(tip_loc) - deg_to_rad(270)
-	$Tip.rotation = self.position.angle_to_point(tip_loc) - deg_to_rad(270)
+	tip.rotation = self.position.angle_to_point(tip_loc) - deg_to_rad(270)
+	links.offset.y = tip_loc.length() / (2 * links.scale.y)
 	links.position = tip_loc
-	links.region_rect.size.y = tip_loc.length()
+	links.region_rect.size.y = tip_loc.length() / links.scale.y
 	
 func _physics_process(delta):
-	$Tip.global_position = Global.hook_pos
+	tip.global_position = Global.hook_pos
 	if flying:
-		if $Tip.move_and_collide(direction):
+		if tip.move_and_collide(direction):
 			Global.is_hooked = true
 			flying = false
-	Global.hook_pos = $Tip.global_position
+	Global.hook_pos = tip.global_position

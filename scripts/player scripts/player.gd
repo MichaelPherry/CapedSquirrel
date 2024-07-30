@@ -34,7 +34,6 @@ func _unhandled_input(event) -> void:
 
 
 func _physics_process(delta):
-	
 	state_machine.physics_step(delta)
 	
 
