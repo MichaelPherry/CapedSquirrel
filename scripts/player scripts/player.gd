@@ -68,8 +68,9 @@ func handle_air_collision():
 				
 	return null
 	
-func _input(event):
-	if event is InputEventMouseButton: # or InputEventKey: #or InputEventJoypadButton:
+func _input(event): 
+	if event is InputEventMouseButton: #shooting for mouse
+		
 		var grapple = grapple_scene.instantiate()
 		if Input.is_action_just_pressed("shoot") and Global.can_hook:
 			var dir = get_global_mouse_position() - self.position
@@ -80,15 +81,33 @@ func _input(event):
 			grapple.release()
 			var child = get_node("grapple")
 			self.remove_child(child)
+			
+	elif event is InputEventJoypadMotion: #shooting for controller
+		var grapple = grapple_scene.instantiate()
+		if Input.is_action_just_pressed("shoot") and Global.can_hook:
+			print("here")
+			var controller_deadzone = 0.2
+			var aim_direction = get_aim_direction()
+			if aim_direction.length() == 0:
+				grapple.shoot(Vector2(1,0), self.position)
+			else:
+				grapple.shoot(aim_direction, self.position)
+			add_child(grapple)
+		
+		if Input.is_action_just_released("shoot"):
+			grapple.release()
+			var child = get_node("grapple")
+			self.remove_child(child)
 
 #unbuffers jump a few frames after we press jump
 func _on_jump_buffer_timer_timeout():
 	PlayerData.jump_buffered = false
 	return
 	
-	
-	
-
+func get_aim_direction():
+	var aim_direction = Vector2(Input.get_action_strength("aim_right") - Input.get_action_strength("aim_left"), Input.get_action_strength("aim_down") - Input.get_action_strength("aim_up"))
+	print(aim_direction)
+	return aim_direction
 
 func _on_ignore_accel_timer_timeout():
 	PlayerData.ignore_accel = false

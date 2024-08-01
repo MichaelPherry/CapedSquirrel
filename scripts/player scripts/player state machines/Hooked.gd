@@ -36,7 +36,7 @@ func logic_step(delta: float) -> State:
 	return null
 	
 func physics_step(delta: float) -> State:
-	
+	Global.can_hook = false
 	chain_velocity = parent.to_local(Global.hook_pos).normalized() * CHAIN_PULL
 	if chain_velocity.y > 0:
 		chain_velocity.y *= 0.35

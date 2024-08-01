@@ -510,7 +510,7 @@ frozen_state = NodePath("Player_state_machine/Frozen")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_mpl6g")
-animation = &"frozen"
+animation = &"glide"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(1, 6)
